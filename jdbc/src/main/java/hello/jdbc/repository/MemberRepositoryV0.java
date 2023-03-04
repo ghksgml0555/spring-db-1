@@ -71,6 +71,49 @@ public class MemberRepositoryV0 {
         }
     }
 
+    public void update(String memberId, int money) throws SQLException {
+        String sql = " update member set money=? where member_id=?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, money);
+            pstmt.setString(2, memberId);
+            //실행
+            int resultSize = pstmt.executeUpdate();
+            log.info("resultSize={}", resultSize);
+        }catch (SQLException e){
+            log.error("db error", e);
+            throw e;
+        }finally {
+            close(con, pstmt, null);
+        }
+
+    }
+
+    public void delete(String memberId) throws SQLException {
+        String sql = "delete from member where member_id=?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, memberId);
+            //실행
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            log.error("db error", e);
+            throw e;
+        }finally {
+            close(con, pstmt, null);
+        }
+    }
+
     private void close(Connection con, Statement stmt, ResultSet rs){
         // PreparedStatement는 Statement를 상속받아서 기능이 더 많다.
         //ResultSet은 뒤에나온다
